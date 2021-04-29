@@ -19,16 +19,6 @@ extension UILabel {
     }
 }
 
-extension Date {
-    
-    func toNoteDateString() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.date(from: "")
-        dateFormatter.dateFormat = "EEEE, MMM d, yyyy 'at' HH:MM A"
-        return dateFormatter.string(from: self)
-    }
-}
-
 class NoteCell: UITableViewCell {
     
     static let id = String(describing: self)

@@ -26,13 +26,7 @@ class NoteEditViewController: UIViewController, UITextViewDelegate {
         didSet {
             guard let note = note else { return }
             textView.text = note.note
-            
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "EEEE, MMM d, yyyy 'at' hh:MM a"
-            let date = dateFormatter.date(from: note.date!)
-            dateFormatter.dateFormat = "MMM d, h:mm a"
-            let dateString = dateFormatter.string(from: date!)
-            title = dateString
+            title = convertDateToTitleString(dateString: note.date!)
         }
     }
     
@@ -107,7 +101,18 @@ class NoteEditViewController: UIViewController, UITextViewDelegate {
     }
     
     private func setupNavigationBar() {
+        if note == nil {
+            title = "New Note"
+        }
         navigationController?.navigationBar.prefersLargeTitles = false
+    }
+
+    fileprivate func convertDateToTitleString(dateString: String) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE, MMM d, yyyy 'at' hh:MM a"
+        let date = dateFormatter.date(from: dateString)
+        dateFormatter.dateFormat = "MMM d, h:mm a"
+        return dateFormatter.string(from: date!)
     }
 
     @objc private func onViewTapped() {
