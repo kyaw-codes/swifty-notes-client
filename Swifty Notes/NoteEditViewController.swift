@@ -22,9 +22,23 @@ extension UITextView {
 
 class NoteEditViewController: UIViewController, UITextViewDelegate {
     
-    let textView = UITextView(font: .systemFont(ofSize: 18))
-    let scrollView = UIScrollView()
-    var scrollViewBottomAnchor: NSLayoutConstraint?
+    var note: Note? {
+        didSet {
+            guard let note = note else { return }
+            textView.text = note.note
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "EEEE, MMM d, yyyy 'at' hh:MM a"
+            let date = dateFormatter.date(from: note.date!)
+            dateFormatter.dateFormat = "MMM d, h:mm a"
+            let dateString = dateFormatter.string(from: date!)
+            title = dateString
+        }
+    }
+    
+    private let textView = UITextView(font: .systemFont(ofSize: 18))
+    private let scrollView = UIScrollView()
+    private var scrollViewBottomAnchor: NSLayoutConstraint?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,7 +107,6 @@ class NoteEditViewController: UIViewController, UITextViewDelegate {
     }
     
     private func setupNavigationBar() {
-        title = "Note"
         navigationController?.navigationBar.prefersLargeTitles = false
     }
 

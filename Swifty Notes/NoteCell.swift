@@ -23,6 +23,7 @@ extension Date {
     
     func toNoteDateString() -> String {
         let dateFormatter = DateFormatter()
+        dateFormatter.date(from: "")
         dateFormatter.dateFormat = "EEEE, MMM d, yyyy 'at' HH:MM A"
         return dateFormatter.string(from: self)
     }
@@ -36,12 +37,12 @@ class NoteCell: UITableViewCell {
         didSet {
             guard let data = note else { return }
             noteLabel.text = data.note
-            dateLabel.text = data.date!.toNoteDateString()
+            dateLabel.text = data.date ?? ""
         }
     }
     
-    private let noteLabel = UILabel(text: "Hello world. This is a pretty bit long text I think. I'm making frontend swift with backend spring boot api.", font: .boldSystemFont(ofSize: 22))
-    private let dateLabel = UILabel(text: "1/1/2021 - 18:35", color: .systemGray)
+    private let noteLabel = UILabel(text: "", font: .boldSystemFont(ofSize: 22))
+    private let dateLabel = UILabel(text: "", color: .systemGray)
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

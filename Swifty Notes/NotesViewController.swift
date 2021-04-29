@@ -9,7 +9,7 @@ import UIKit
 
 class NotesViewController: UITableViewController {
     
-    let dataSource = NoteDataSource()
+    let dataSource = NoteDataSource.shared
     
     let searchController = UISearchController()
 
@@ -39,10 +39,21 @@ class NotesViewController: UITableViewController {
         navigationItem.hidesSearchBarWhenScrolling = true
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let note = dataSource.notes[indexPath.row]
+        let noteEditVC = NoteEditViewController()
+        noteEditVC.note = note
+        navigateToNoteEditVC(vc: noteEditVC)
+        tableView.deselectRow(at: indexPath, animated: false)
+    }
+    
     @objc private func onAddTapped() {
-        // navigate to note edit vc
+        navigateToNoteEditVC(vc: NoteEditViewController())
+    }
+    
+    private func navigateToNoteEditVC(vc: NoteEditViewController, animated: Bool = true) {
         title = ""
-        navigationController?.pushViewController(NoteEditViewController(), animated: true)
+        navigationController?.pushViewController(vc, animated: animated)
     }
     
 }
