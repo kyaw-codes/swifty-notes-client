@@ -30,6 +30,8 @@ class NoteEditViewController: UIViewController, UITextViewDelegate {
         }
     }
     
+    private var dataSource = NoteDataSource.shared
+    
     private let textView = UITextView(font: .systemFont(ofSize: 18))
     private let scrollView = UIScrollView()
     private var scrollViewBottomAnchor: NSLayoutConstraint?
@@ -109,7 +111,7 @@ class NoteEditViewController: UIViewController, UITextViewDelegate {
 
     fileprivate func convertDateToTitleString(dateString: String) -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE, MMM d, yyyy 'at' hh:MM a"
+        dateFormatter.dateFormat = "EEEE, MMM d, yyyy 'at' hh:mm a"
         let date = dateFormatter.date(from: dateString)
         dateFormatter.dateFormat = "MMM d, h:mm a"
         return dateFormatter.string(from: date!)
@@ -118,10 +120,39 @@ class NoteEditViewController: UIViewController, UITextViewDelegate {
     @objc private func onViewTapped() {
         textView.becomeFirstResponder()
     }
-
+    
     @objc private func onSaveTapped() {
         textView.resignFirstResponder()
-        // TODO: Save operation
+        
+        if note == nil {
+            NoteService.shared.add(note: textView.text) { [weak self] (result) in
+                guard let self = self else { return }
+                do {
+                    let note = try result.get()
+                    self.dataSource.notes.append(note)
+                    self.dataSource.notes = NoteService.sortNoteByDate(self.dataSource.notes)
+                    self.dataSource.dataChange?()
+                } catch {
+                    fatalError("Adding note failed: \(error)")
+                }
+            }
+        } else {
+            let index = dataSource.notes.firstIndex { $0.note.elementsEqual(self.note!.note) }!
+            let noteToUpdate = Note(id: note!.id, note: textView.text, date: nil)
+            
+            NoteService.shared.update(note: noteToUpdate) { [weak self] (result) in
+                guard let self = self else { return }
+                do {
+                    let updatedNote = try result.get()
+                    self.dataSource.notes[index] = updatedNote
+                    self.dataSource.notes = NoteService.sortNoteByDate(self.dataSource.notes)
+                    self.dataSource.dataChange?()
+                } catch {
+                    fatalError("Updating note failed: \(error)")
+                }
+            }
+
+        }
         navigationController?.popViewController(animated: true)
     }
     

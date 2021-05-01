@@ -16,9 +16,14 @@ class NotesViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        dataSource.dataChange = { [weak self] in
+            self?.tableView.reloadData()
+        }
+        
         setupNavigationBar()
         tableView.register(NoteCell.self, forCellReuseIdentifier: NoteCell.id)
         tableView.dataSource = dataSource
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {

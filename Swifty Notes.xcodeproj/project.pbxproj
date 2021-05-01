@@ -15,6 +15,7 @@
 		0265546A2638502C003C6F64 /* NoteEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026554692638502C003C6F64 /* NoteEditViewController.swift */; };
 		02655471263855DB003C6F64 /* NoteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02655470263855DB003C6F64 /* NoteCell.swift */; };
 		02655474263855F1003C6F64 /* NoteDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02655473263855F1003C6F64 /* NoteDataSource.swift */; };
+		0296487F263BFEBF009D5198 /* NoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0296487E263BFEBE009D5198 /* NoteService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		026554692638502C003C6F64 /* NoteEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEditViewController.swift; sourceTree = "<group>"; };
 		02655470263855DB003C6F64 /* NoteCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteCell.swift; sourceTree = "<group>"; };
 		02655473263855F1003C6F64 /* NoteDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDataSource.swift; sourceTree = "<group>"; };
+		0296487E263BFEBE009D5198 /* NoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 				026554692638502C003C6F64 /* NoteEditViewController.swift */,
 				02655470263855DB003C6F64 /* NoteCell.swift */,
 				02655473263855F1003C6F64 /* NoteDataSource.swift */,
+				0296487E263BFEBE009D5198 /* NoteService.swift */,
 				0265545C26384FF6003C6F64 /* Assets.xcassets */,
 				0265545E26384FF6003C6F64 /* LaunchScreen.storyboard */,
 				0265546126384FF6003C6F64 /* Info.plist */,
@@ -142,6 +145,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0296487F263BFEBF009D5198 /* NoteService.swift in Sources */,
 				02655474263855F1003C6F64 /* NoteDataSource.swift in Sources */,
 				0265545826384FF2003C6F64 /* NotesViewController.swift in Sources */,
 				0265545426384FF2003C6F64 /* AppDelegate.swift in Sources */,

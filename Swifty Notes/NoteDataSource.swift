@@ -13,22 +13,26 @@ struct Note: Codable {
     var date: String? = nil
 }
 
-class NoteDataSource: NSObject, UITableViewDataSource {
-    
+class NoteDataSource: NSObject, UITableViewDataSource, UISearchResultsUpdating {
+
     var notes = [Note]()
     
+    var dataChange: (() -> Void)?
+    
     static let shared = NoteDataSource()
+    private let urlString = "http://localhost:8080/api/v0/note"
     
     private override init() {
         super.init()
         
-        fetchNotes { [weak self] (result) in
-            DispatchQueue.global().async {
-                do {
-                    self?.notes = try result.get()
-                } catch {
-                    debugPrint(error)
-                }
+        NoteService.shared.fetchNotes { [weak self] result in
+            guard let self = self else { return }
+            do {
+                self.notes = try result.get()
+                self.notes = NoteService.sortNoteByDate(self.notes)
+                self.dataChange?()
+            } catch {
+                debugPrint(error)
             }
         }
     }
@@ -45,39 +49,24 @@ class NoteDataSource: NSObject, UITableViewDataSource {
         return cell
     }
     
-    private func fetchNotes(completion: @escaping (Result<[Note], Error>) -> Void) {
-        let urlString = "http://localhost:8080/api/v0/note"
-        guard let url = URL(string: urlString) else { return }
-        
-        let dataTask = URLSession.shared.dataTask(with: url) { (note, response, error) in
-            // Check basic error
-            if error != nil || note == nil {
-                completion(.failure(error!))
-                return
-            }
-            
-            guard let response = response as? HTTPURLResponse, (200...299).contains(response.statusCode) else {
-                completion(.failure(error!))
-                return
-            }
-            
-            guard let mime = response.mimeType, mime == "application/json" else {
-                debugPrint("Wrong MIME type")
-                return
-            }
-            
-            // Actual json decoding
-            do {
-                let decoder = JSONDecoder()
-//                decoder.dateDecodingStrategy = .iso8601
-                let notes = try decoder.decode([Note].self, from: note!)
-                completion(.success(notes))
-            } catch {
-                debugPrint(error)
-            }
-        }
-        
-        dataTask.resume()
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
     }
     
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let id = notes[indexPath.row].id
+            NoteService.shared.delete(id: id) { [weak self] isSuccessful in
+                if isSuccessful {
+                    self?.notes.remove(at: indexPath.row)
+                    tableView.deleteRows(at: [indexPath], with: .automatic)
+                }
+            }
+        }
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        // TODO: Implement later
+    }
+
 }
