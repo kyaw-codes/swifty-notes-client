@@ -19,7 +19,7 @@ class NoteDataSource: NSObject, UITableViewDataSource {
     private override init() {
         super.init()
         
-        fetchNotes()
+        reloadAllNotes()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -50,7 +50,7 @@ class NoteDataSource: NSObject, UITableViewDataSource {
         }
     }
     
-    private func fetchNotes() {
+    private func reloadAllNotes() {
         NoteService.shared.fetchNotes { [weak self] result in
             guard let self = self else { return }
             do {
@@ -72,7 +72,7 @@ extension NoteDataSource : UISearchResultsUpdating {
         if searchText != "" {
             notes = notes.filter { $0.note.lowercased().contains(searchText ?? "") }
         } else {
-            fetchNotes()
+            reloadAllNotes()
         }
         dataChange?()
     }

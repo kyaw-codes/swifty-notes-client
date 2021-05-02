@@ -18,7 +18,6 @@ class NotesViewController: UITableViewController {
         
         dataSource.dataChange = { [weak self] in
             self?.tableView.reloadData()
-            debugPrint("Data changed")
         }
         
         searchController.searchResultsUpdater = dataSource

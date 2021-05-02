@@ -66,20 +66,52 @@
 		0265545226384FF2003C6F64 /* Swifty Notes */ = {
 			isa = PBXGroup;
 			children = (
-				0265545326384FF2003C6F64 /* AppDelegate.swift */,
-				0265545526384FF2003C6F64 /* SceneDelegate.swift */,
-				0265545726384FF2003C6F64 /* NotesViewController.swift */,
-				026554692638502C003C6F64 /* NoteEditViewController.swift */,
-				02655470263855DB003C6F64 /* NoteCell.swift */,
-				02655473263855F1003C6F64 /* NoteDataSource.swift */,
-				0296487E263BFEBE009D5198 /* NoteService.swift */,
-				02A1A7D9263EA0CB0010D1F3 /* Note.swift */,
-				02A1A7D6263EA0970010D1F3 /* Extensions.swift */,
-				0265545C26384FF6003C6F64 /* Assets.xcassets */,
-				0265545E26384FF6003C6F64 /* LaunchScreen.storyboard */,
+				02A1A7E3263EC79B0010D1F3 /* Helper */,
+				02A1A7E2263EC77C0010D1F3 /* View */,
+				02A1A7E1263EC7770010D1F3 /* Model */,
+				02A1A7E0263EC7710010D1F3 /* Controller */,
 				0265546126384FF6003C6F64 /* Info.plist */,
 			);
 			path = "Swifty Notes";
+			sourceTree = "<group>";
+		};
+		02A1A7E0263EC7710010D1F3 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				0265545726384FF2003C6F64 /* NotesViewController.swift */,
+				026554692638502C003C6F64 /* NoteEditViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		02A1A7E1263EC7770010D1F3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				0296487E263BFEBE009D5198 /* NoteService.swift */,
+				02655473263855F1003C6F64 /* NoteDataSource.swift */,
+				02A1A7D9263EA0CB0010D1F3 /* Note.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		02A1A7E2263EC77C0010D1F3 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				02655470263855DB003C6F64 /* NoteCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		02A1A7E3263EC79B0010D1F3 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				0265545326384FF2003C6F64 /* AppDelegate.swift */,
+				0265545526384FF2003C6F64 /* SceneDelegate.swift */,
+				0265545C26384FF6003C6F64 /* Assets.xcassets */,
+				0265545E26384FF6003C6F64 /* LaunchScreen.storyboard */,
+				02A1A7D6263EA0970010D1F3 /* Extensions.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
