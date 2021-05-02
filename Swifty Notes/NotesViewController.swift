@@ -11,15 +11,19 @@ class NotesViewController: UITableViewController {
     
     let dataSource = NoteDataSource.shared
     
-    let searchController = UISearchController()
+    let searchController = UISearchController(searchResultsController: nil)
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         dataSource.dataChange = { [weak self] in
             self?.tableView.reloadData()
+            debugPrint("Data changed")
         }
         
+        searchController.searchResultsUpdater = dataSource
+        searchController.obscuresBackgroundDuringPresentation = false
+
         setupNavigationBar()
         tableView.register(NoteCell.self, forCellReuseIdentifier: NoteCell.id)
         tableView.dataSource = dataSource

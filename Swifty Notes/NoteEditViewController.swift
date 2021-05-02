@@ -7,26 +7,13 @@
 
 import UIKit
 
-extension UITextView {
-    
-    convenience init(font: UIFont, isNoteTextField: Bool = true) {
-        self.init(frame: .zero)
-        
-        self.font = font
-        if isNoteTextField {
-            self.autocorrectionType = .no
-            self.autocapitalizationType = .none
-        }
-    }
-}
-
-class NoteEditViewController: UIViewController, UITextViewDelegate {
+class NoteEditViewController: UIViewController {
     
     var note: Note? {
         didSet {
             guard let note = note else { return }
             textView.text = note.note
-            title = convertDateToTitleString(dateString: note.date!)
+            title = note.date!.toNoteTitle()
         }
     }
     
@@ -54,11 +41,6 @@ class NoteEditViewController: UIViewController, UITextViewDelegate {
         super.viewWillDisappear(animated)
         
         navigationController?.navigationBar.prefersLargeTitles = true
-    }
-    
-    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(onSaveTapped)), animated: true)
-        return true
     }
     
     fileprivate func listenKeyboardNotification() {
@@ -109,14 +91,6 @@ class NoteEditViewController: UIViewController, UITextViewDelegate {
         navigationController?.navigationBar.prefersLargeTitles = false
     }
 
-    fileprivate func convertDateToTitleString(dateString: String) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE, MMM d, yyyy 'at' hh:mm a"
-        let date = dateFormatter.date(from: dateString)
-        dateFormatter.dateFormat = "MMM d, h:mm a"
-        return dateFormatter.string(from: date!)
-    }
-
     @objc private func onViewTapped() {
         textView.becomeFirstResponder()
     }
@@ -125,35 +99,50 @@ class NoteEditViewController: UIViewController, UITextViewDelegate {
         textView.resignFirstResponder()
         
         if note == nil {
-            NoteService.shared.add(note: textView.text) { [weak self] (result) in
-                guard let self = self else { return }
-                do {
-                    let note = try result.get()
-                    self.dataSource.notes.append(note)
-                    self.dataSource.notes = NoteService.sortNoteByDate(self.dataSource.notes)
-                    self.dataSource.dataChange?()
-                } catch {
-                    fatalError("Adding note failed: \(error)")
-                }
-            }
+            saveNote()
         } else {
-            let index = dataSource.notes.firstIndex { $0.note.elementsEqual(self.note!.note) }!
-            let noteToUpdate = Note(id: note!.id, note: textView.text, date: nil)
-            
-            NoteService.shared.update(note: noteToUpdate) { [weak self] (result) in
-                guard let self = self else { return }
-                do {
-                    let updatedNote = try result.get()
-                    self.dataSource.notes[index] = updatedNote
-                    self.dataSource.notes = NoteService.sortNoteByDate(self.dataSource.notes)
-                    self.dataSource.dataChange?()
-                } catch {
-                    fatalError("Updating note failed: \(error)")
-                }
-            }
-
+            updateNote()
         }
         navigationController?.popViewController(animated: true)
     }
     
+    private func saveNote() {
+        NoteService.shared.add(note: textView.text) { [weak self] (result) in
+            guard let self = self else { return }
+            do {
+                let note = try result.get()
+                self.dataSource.notes.append(note)
+                self.dataSource.notes = NoteService.sortNoteByDate(self.dataSource.notes)
+                self.dataSource.dataChange?()
+            } catch {
+                fatalError("Adding note failed: \(error)")
+            }
+        }
+    }
+    
+    private func updateNote() {
+        let index = dataSource.notes.firstIndex { $0.note.elementsEqual(self.note!.note) }!
+        let noteToUpdate = Note(id: note!.id, note: textView.text, date: nil)
+        
+        NoteService.shared.update(note: noteToUpdate) { [weak self] (result) in
+            guard let self = self else { return }
+            do {
+                let updatedNote = try result.get()
+                self.dataSource.notes[index] = updatedNote
+                self.dataSource.notes = NoteService.sortNoteByDate(self.dataSource.notes)
+                self.dataSource.dataChange?()
+            } catch {
+                fatalError("Updating note failed: \(error)")
+            }
+        }
+    }
+    
+}
+
+extension NoteEditViewController : UITextViewDelegate {
+    
+    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(onSaveTapped)), animated: true)
+        return true
+    }
 }

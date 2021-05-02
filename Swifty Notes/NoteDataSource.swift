@@ -7,13 +7,7 @@
 
 import UIKit
 
-struct Note: Codable {
-    var id: Int = 1
-    var note: String
-    var date: String? = nil
-}
-
-class NoteDataSource: NSObject, UITableViewDataSource, UISearchResultsUpdating {
+class NoteDataSource: NSObject, UITableViewDataSource {
 
     var notes = [Note]()
     
@@ -25,16 +19,7 @@ class NoteDataSource: NSObject, UITableViewDataSource, UISearchResultsUpdating {
     private override init() {
         super.init()
         
-        NoteService.shared.fetchNotes { [weak self] result in
-            guard let self = self else { return }
-            do {
-                self.notes = try result.get()
-                self.notes = NoteService.sortNoteByDate(self.notes)
-                self.dataChange?()
-            } catch {
-                debugPrint(error)
-            }
-        }
+        fetchNotes()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -65,8 +50,30 @@ class NoteDataSource: NSObject, UITableViewDataSource, UISearchResultsUpdating {
         }
     }
     
-    func updateSearchResults(for searchController: UISearchController) {
-        // TODO: Implement later
+    private func fetchNotes() {
+        NoteService.shared.fetchNotes { [weak self] result in
+            guard let self = self else { return }
+            do {
+                self.notes = try result.get()
+                self.notes = NoteService.sortNoteByDate(self.notes)
+                self.dataChange?()
+            } catch {
+                debugPrint(error)
+            }
+        }
     }
 
+}
+
+extension NoteDataSource : UISearchResultsUpdating {
+
+    func updateSearchResults(for searchController: UISearchController) {
+        let searchText = searchController.searchBar.text?.lowercased()
+        if searchText != "" {
+            notes = notes.filter { $0.note.lowercased().contains(searchText ?? "") }
+        } else {
+            fetchNotes()
+        }
+        dataChange?()
+    }
 }

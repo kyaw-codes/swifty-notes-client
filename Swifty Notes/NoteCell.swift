@@ -7,18 +7,6 @@
 
 import UIKit
 
-extension UILabel {
-    
-    convenience init(text: String, font: UIFont? = nil, color: UIColor? = nil, noOfLines: Int = 1) {
-        self.init(frame: .zero)
-        
-        self.text = text
-        self.font = font
-        self.textColor = color
-        self.numberOfLines = noOfLines
-    }
-}
-
 class NoteCell: UITableViewCell {
     
     static let id = String(describing: self)

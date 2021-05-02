@@ -162,25 +162,10 @@ class NoteService {
         task.resume()
     }
     
-    static func convertDateToString(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, MMM d, yyyy 'at' hh:mm a"
-        return formatter.string(from: date)
-    }
-    
-    static func convertStringToDate(_ string: String) -> Date {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, MMM d, yyyy 'at' hh:mm a"
-        guard let date = formatter.date(from: string) else {
-            fatalError("Failed to convert \(string) into Date object.")
-        }
-        return date
-    }
-    
     static func sortNoteByDate(_ notes: [Note]) -> [Note] {
         // Sort note by date
         return notes.sorted { (n1, n2) -> Bool in
-            NoteService.convertStringToDate(n1.date!) >= NoteService.convertStringToDate(n2.date!)
+            n1.date!.toNoteDate() >= n2.date!.toNoteDate()
         }
     }
 }
